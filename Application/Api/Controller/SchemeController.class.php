@@ -118,7 +118,7 @@
 					//对信息进行校验，暂时没写
 					//信息入库
 					// dump($res);
-					$list = M('LotteryScheme')->where('schemeno = %s', $res["schemeno"])->setField('tstatus',$res['tstatus']);//更新数据库，注意这里要锁表
+					$list = M('LotteryScheme')->where('schemeid = %s', $res["schemeid"])->setField('tstatus',$res['tstatus']);//更新数据库，注意这里要锁表
 					if ($list !== false){//返回成功报文
 						$data = array(
 										"retcode"=>"200",
