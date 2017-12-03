@@ -66,7 +66,7 @@
 								$de[$k2 ]['lotteryNumber'] = (array)json_decode($v2['lotteryNumber']);
 								
 							}
-							$s[$k]['ticketsdetail'] = $de;
+							// $s[$k]['ticketsdetail'] = $de;
 						}
 						
 						// dump($s);
@@ -113,25 +113,44 @@
 					//这里是更新状态信息
 					$patch = file_get_contents("php://input");//获取POST数据
 					// $post = I('post.');
-					// dump($post);
+					// dump($patch);
 					$res = json_decode ( $patch, true);//对POST信息解码
 					//对信息进行校验，暂时没写
 					//信息入库
 					// dump($res);
-					$list = M('LotteryScheme')->where('schemeid = %s', $res["schemeid"])->setField('tstatus',$res['tstatus']);//更新数据库，注意这里要锁表
-					if ($list !== false){//返回成功报文
+					$ls = M('LotteryScheme');
+					$map['schemeid'] = $res['schemeid'];
+					$tstatus = M('LotteryScheme')->where($map)->getField('tstatus');
+					if($tstatus == 1){
+						$map2['sid'] = $res['schemeid'];
+						$detail = M('LotteryDetail')->where($map2)->select();
+						foreach ($detail as $k2 =>$v2){
+								$de[$k2 ]['amount'] = $v2['amount'];
+								$de[$k2 ]['type'] = $v2['type'];
+								$de[$k2 ]['ticketid'] = $v2['ticketid'];
+								$de[$k2 ]['lotteryNumber'] = (array)json_decode($v2['lotteryNumber']);
+								
+							}
+							
+						$list = M('LotteryScheme')->where('schemeid = %s', $res["schemeid"])->setField('tstatus',$res['tstatus']);//更新数据库，注意这里要锁表
+						
+						// dump($list);
+						if ($list == false){//返回失败报文
+							$data = array(
+											"retcode"=>"400",
+											"retmessage"=> "提交失败".M('LotteryScheme')->getDbError()
+									);
+							$this->response($data,'json');
+						}else{
+							
+						//返回成功报文
 						$data = array(
 										"retcode"=>"200",
+										"schemedetail"=>$de,
 										"retmessage"=> "提交成功"
 								);
 						$this->response($data,'json');
-						
-					}else{//返回失败报文
-						$data = array(
-										"retcode"=>"400",
-										"retmessage"=> "提交失败".M('LotteryScheme')->getDbError()
-								);
-						$this->response($data,'json');
+						}
 					}
 					break;   
 				 
