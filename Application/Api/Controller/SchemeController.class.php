@@ -120,8 +120,8 @@
 					// dump($res);
 					$ls = M('LotteryScheme');
 					$map['schemeid'] = $res['schemeid'];
-					$tstatus = M('LotteryScheme')->where($map)->getField('tstatus');
-					if($tstatus == 1){
+					if ($res['tstatus'] == 6){
+						$de = array();
 						$map2['sid'] = $res['schemeid'];
 						$detail = M('LotteryDetail')->where($map2)->select();
 						foreach ($detail as $k2 =>$v2){
@@ -129,11 +129,29 @@
 								$de[$k2 ]['type'] = $v2['type'];
 								$de[$k2 ]['ticketid'] = $v2['ticketid'];
 								$de[$k2 ]['lotteryNumber'] = (array)json_decode($v2['lotteryNumber']);
-								
 							}
-							
+						$data = array(
+										"retcode"=>"200",
+										"schemedetail"=>$de,
+										"retmessage"=> "请求成功"
+								);
+						$this->response($data,'json');
+					}
+					
+					$tstatus = M('LotteryScheme')->where($map)->getField('tstatus');
+											
+					if($tstatus == 1){
+						$de = array();
+						$map2['sid'] = $res['schemeid'];
+						$detail = M('LotteryDetail')->where($map2)->select();
+						foreach ($detail as $k2 =>$v2){
+								$de[$k2 ]['amount'] = $v2['amount'];
+								$de[$k2 ]['type'] = $v2['type'];
+								$de[$k2 ]['ticketid'] = $v2['ticketid'];
+								$de[$k2 ]['lotteryNumber'] = (array)json_decode($v2['lotteryNumber']);
+							}
+						// dump($de);
 						$list = M('LotteryScheme')->where('schemeid = %s', $res["schemeid"])->setField('tstatus',$res['tstatus']);//更新数据库，注意这里要锁表,暂时没写。
-						
 						// dump($list);
 						if ($list == false){//返回失败报文,
 							$data = array(
@@ -143,7 +161,7 @@
 							$this->response($data,'json');
 						}else{
 						//返回成功报文
-						$data = array(
+							$data = array(
 										"retcode"=>"200",
 										"schemedetail"=>$de,
 										"retmessage"=> "提交成功"
