@@ -24,7 +24,6 @@
 					$data = array(
 							    "retcode"=>"0002",
 								"retmessage"=> "post数据为空",
-								"jobid"=> "",
 								"token"=> ""
 					);
 					$this->response($data,'json');
@@ -39,7 +38,6 @@
 							    "retcode"=>"0003",
 								"retmessage"=> "用户名或密码不能为空",
 								"userid"=>"",
-								"jobid"=> "",
 								"token"=> ""
 					);
 					$this->response($data,'json');

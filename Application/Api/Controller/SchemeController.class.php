@@ -52,7 +52,7 @@
 					//根据彩店ID查询所有对应的status=0的方案
 					$map['shopid'] = $this->userid;
 					$map['status'] = 1;
-					$s = M('LotteryScheme')->where($map)->limit(10)->select();
+					$s = M('LotteryScheme')->where($map)->limit(9)->select();
 					// dump($s);
 					
 					if ($s){
@@ -109,25 +109,26 @@
 					}
 					break; 
 					      
-					case 'patch': // put请求处理代码 
+					case 'patch': // patch请求处理代码 
 					//这里是更新状态信息
-					$post = file_get_contents("php://input");//获取POST数据
+					$patch = file_get_contents("php://input");//获取POST数据
 					// $post = I('post.');
-					dump($post);
-					$res = json_decode ( $post, true);//对POST信息解码
+					// dump($post);
+					$res = json_decode ( $patch, true);//对POST信息解码
 					//对信息进行校验，暂时没写
 					//信息入库
-					// $list = M('LotteryScheme')->add($res);//更新数据库，注意这里要锁表
+					// dump($res);
+					$list = M('LotteryScheme')->where('schemeno = %s', $res["schemeno"])->setField('tstatus',$res['tstatus']);//更新数据库，注意这里要锁表
 					if ($list !== false){//返回成功报文
 						$data = array(
-										"retcode"=>"0000",
+										"retcode"=>"200",
 										"retmessage"=> "提交成功"
 								);
 						$this->response($data,'json');
 						
 					}else{//返回失败报文
 						$data = array(
-										"retcode"=>"0008",
+										"retcode"=>"400",
 										"retmessage"=> "提交失败".M('LotteryScheme')->getDbError()
 								);
 						$this->response($data,'json');
