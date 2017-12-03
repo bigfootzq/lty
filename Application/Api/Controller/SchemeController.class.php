@@ -132,17 +132,16 @@
 								
 							}
 							
-						$list = M('LotteryScheme')->where('schemeid = %s', $res["schemeid"])->setField('tstatus',$res['tstatus']);//更新数据库，注意这里要锁表
+						$list = M('LotteryScheme')->where('schemeid = %s', $res["schemeid"])->setField('tstatus',$res['tstatus']);//更新数据库，注意这里要锁表,暂时没写。
 						
 						// dump($list);
-						if ($list == false){//返回失败报文
+						if ($list == false){//返回失败报文,
 							$data = array(
 											"retcode"=>"400",
 											"retmessage"=> "提交失败".M('LotteryScheme')->getDbError()
 									);
 							$this->response($data,'json');
 						}else{
-							
 						//返回成功报文
 						$data = array(
 										"retcode"=>"200",
